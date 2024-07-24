@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PathsActivity">
+
+    <TextView
+        android:id="@+id/PathTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Shortest Paths"
+        android:textColor="#E42828"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/Selection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/Selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="choose one:"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="47dp"
+        tools:layout_editor_absoluteY="113dp" />
+
+    <TextView
+        android:id="@+id/EasiestPath"
+        android:layout_width="333dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Paths"
+        tools:layout_editor_absoluteX="47dp"
+        tools:text="Easiest path" />
+
+    <TextView
+        android:id="@+id/Paths"
+        android:layout_width="308dp"
+        android:layout_height="336dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-light"
+        android:lineSpacingExtra="8sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/EasiestPath"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Selection"
+        tools:text="Paths" />
+</androidx.constraintlayout.widget.ConstraintLayout>

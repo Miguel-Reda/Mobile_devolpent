@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="335dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="44dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="Route and Destination"
+        android:textColor="#E42828"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/mapbutton"
+        android:layout_width="119dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="#E42828"
+        android:fontFamily="sans-serif-light"
+        android:onClick="GoToMap"
+        android:text="Map"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.868"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/route"
+        android:layout_width="379dp"
+        android:layout_height="420dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/mapbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title"
+        tools:text="route and destination" />
+
+    <Button
+        android:id="@+id/pathbutton"
+        android:layout_width="120dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="36dp"
+        android:backgroundTint="#E42828"
+        android:fontFamily="sans-serif-light"
+        android:onClick="GoToPaths"
+        android:text="paths"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapbutton"
+        app:layout_constraintVertical_bias="0.384" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
