@@ -71,23 +71,24 @@ public class RouteActivity extends AppCompatActivity {
             // Check if the station is a switch station (Al-Shohadaa) and change the direction
             if (stations[i].equals("Al-Shohadaa")) {
                 if (stations[i + 1].equals("Ghamra")) {
-                    if (!direction.equals("New El-Marg"))
+                    if (!direction.equalsIgnoreCase("New El-Marg"))
                         routeString.append("(Switch to New El-Marg Direction)");
                     direction = "New El-Marg";
-                } else if (stations[i + 1].equals("Massara")) {
-                    if (!direction.equals("Shubra El-Kheima"))
+                } else if (stations[i + 1].equalsIgnoreCase("Massara")) {
+                    if (!direction.equalsIgnoreCase("Shubra El-Kheima"))
                         routeString.append("(Switch to Shubra El-Kheima Direction)");
                     direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Attaba"))
-                    if (!direction.equals("El-Mounib")) {
+                } else if (stations[i + 1].equalsIgnoreCase("Attaba")) {
+                    if (!direction.equalsIgnoreCase("El-Mounib"))
                         routeString.append("(Switch to El-Mounib Direction)");
-                        direction = "El-Mounib";
-                    } else if (stations[i + 1].equals("Orabi")) {
-                        if (!direction.equals("Helwan"))
-                            routeString.append("(Switch to Helwan Direction)");
-                        direction = "Helwan";
-                    }
+                    direction = "El-Mounib";
+                } else if (stations[i + 1].equals("Orabi")) {
+                    if (!direction.equalsIgnoreCase("Helwan"))
+                        routeString.append("(Switch to Helwan Direction)");
+                    direction = "Helwan";
+                }
             }
+
             // Check if the station is a switch station (Sadat) and change the direction
             else if (stations[i].equals("Sadat")) {
                 if (stations[i + 1].equals("Opera")) {
@@ -149,7 +150,7 @@ public class RouteActivity extends AppCompatActivity {
                 }
             }
             if (i + 1 < stations.length)
-                routeString.append(" -> ");
+                routeString.append(" ->  ");
         }
         
         routeString.append("\n\nDirection: ").append(direction);

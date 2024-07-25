@@ -37,7 +37,7 @@ public class PathsActivity extends AppCompatActivity {
         for (int i = 0; i < paths.size(); i++) {
             paths.set(i, paths.get(i).substring(0, paths.get(i).length() - 2));
             int pathLength = paths.get(i).split(", ").length;
-            pathsString.append("Path ").append(i + 1).append("(").append(pathLength).append(" stations)").append(": ").append(paths.get(i)).append("\n");
+            pathsString.append("- Path ").append(i + 1).append("(").append(pathLength).append(" stations)").append(": ").append(paths.get(i)).append("\n\n");
             if (paths.get(i).split(", ").length < shortestPathLength) {
                 shortestPath = paths.get(i);
                 shortestPathLength = pathLength;
@@ -45,8 +45,8 @@ public class PathsActivity extends AppCompatActivity {
         }
         pathsTextView.setText(pathsString.toString());
         pathsString.append("Shortest Path (").append(shortestPathLength).append(" stations): ").append(shortestPath).append("\n");
-        pathsString.insert(0, "Please choose a path to view its route:\n");
-        ArrayAdapter<String>adapterChoice = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, pathsString.toString().split("\n"));
+        pathsString.insert(0, "Please choose a path to view its route:\n\n");
+        ArrayAdapter<String>adapterChoice = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, pathsString.toString().split("\n\n"));
         adapterChoice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chooseSpinner.setAdapter(adapterChoice);
         shortestPathTextView.setText("Shortest Path (" + shortestPathLength + " stations): " + shortestPath);

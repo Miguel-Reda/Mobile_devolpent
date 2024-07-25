@@ -44,7 +44,7 @@
         android:id="@+id/PathTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-light"
         android:text="Available Paths :"
         android:textColor="#E42828"
@@ -55,50 +55,65 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/pathsTextView"
-        android:layout_width="393dp"
-        android:layout_height="452dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="sans-serif"
-        android:lineSpacingExtra="8sp"
-        android:textSize="14sp"
-        android:textStyle="bold"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="397dp"
+        android:layout_height="388dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/shortestPathTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PathTitle"
-        tools:text="Paths" />
+        app:layout_constraintTop_toBottomOf="@+id/PathTitle">
+
+        <TextView
+            android:id="@+id/pathsTextView"
+            android:layout_width="393dp"
+            android:layout_height="452dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="8sp"
+            android:scrollbars="vertical"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/PathTitle"
+            tools:text="Paths" />
+    </ScrollView>
 
     <TextView
         android:id="@+id/shortestPathTextView"
-        android:layout_width="395dp"
-        android:layout_height="71dp"
+        android:layout_width="383dp"
+        android:layout_height="179dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
+        android:scrollbars="vertical"
         android:textSize="14sp"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/chooseSpinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pathsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
         tools:text="Shortest path" />
 
     <Spinner
         android:id="@+id/chooseSpinner"
         android:layout_width="409dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/backbtn"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shortestPathTextView"
-        app:layout_constraintVertical_bias="0.126" />
+        app:layout_constraintTop_toBottomOf="@+id/shortestPathTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
