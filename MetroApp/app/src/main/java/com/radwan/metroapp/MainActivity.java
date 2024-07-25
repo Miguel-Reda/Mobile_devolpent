@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -20,7 +21,7 @@ import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<String> Lines = new ArrayList<String>();
-
+    
     ArrayList<String> line1Stations = new ArrayList<String>();
     ArrayList<String> line2Stations = new ArrayList<String>();
     ArrayList<String> line3Stations = new ArrayList<String>();
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Spinner arrivalLineSpinner;
     Spinner endStationSpinner;
 
+    Button done;
     Graph graph = new Graph();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         arrivalLineSpinner = findViewById(R.id.arrivalLineSpinner);
         startStationSpinner = findViewById(R.id.startStationSpinner);
         endStationSpinner = findViewById(R.id.endStationSpinner);
+//        done = findViewById(R.id.done);
         ArrayAdapter<String> adapterLine = new ArrayAdapter(this, android.R.layout.simple_spinner_item,Lines);
         adapterLine.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         positionLineSpinner.setAdapter(adapterLine);
@@ -128,9 +131,37 @@ public class MainActivity extends AppCompatActivity {
             
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // Do nothing
+//                done.setEnabled(false);
             }
         });
+//
+//        startStationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (position != 0 && arrivalLineSpinner.getSelectedItemPosition() != 0) {
+//                    done.setEnabled(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                done.setEnabled(false);
+//            }
+//        });
+
+//        endStationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (position != 0 && positionLineSpinner.getSelectedItemPosition() != 0) {
+//                    done.setEnabled(true);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                done.setEnabled(false);
+//            }
+//        });
 
          addVertices(graph, line1Stations);
          addVertices(graph, line2Stations);
@@ -153,159 +184,18 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select a station", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(startStationSpinner.getSelectedItem().toString().equals(endStationSpinner.getSelectedItem().toString())) {
+            Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Vertex start = graph.getVertex(startStationSpinner.getSelectedItem().toString());
         Vertex end = graph.getVertex(endStationSpinner.getSelectedItem().toString());
         ArrayList<String> paths = graph.getAllPaths(start, end);
-        for(String path : paths) {
-            System.out.println(path);
-        }
-        
         Intent intent = new Intent(this, PathsActivity.class);
         intent.putStringArrayListExtra("paths", paths);
         startActivity(intent);
         
     }
-        
-/*
-        String shortestPath = "";
-        int shortestPathLength = Integer.MAX_VALUE;
 
-        // get all paths from start to end
-        ArrayList<String> paths = graph.getAllPaths(start, end);
-
-        // print all paths and find the shortest path
-        for (int i = 0; i < paths.size(); i++) {
-            paths.set(i, paths.get(i).substring(0, paths.get(i).length() - 2));
-            int pathLength = paths.get(i).split(", ").length;
-            System.out.println("Path " + (i + 1) + "(" + pathLength + " stations)" + ": " + paths.get(i));
-            if (paths.get(i).split(", ").length < shortestPathLength) {
-                shortestPath = paths.get(i);
-                shortestPathLength = pathLength;
-            }
-        }
-
-       System.out.println("\nShortest Path: " + shortestPath);
-       System.out.println("Shortest Path Length: " + shortestPathLength + " stations");
-       System.out.println("If you want to take shortest path enter yes, otherwise enter number of path you want to take");
-
-       String choice = iScanner.nextLine();
-
-    //     Calculate the number of stations and direction of the path
-        int numberOfStations = -1;
-        String[] stations = null;
-
-        if (choice.equalsIgnoreCase("yes")) {
-            stations = shortestPath.split(", ");
-        } else {
-            int pathNumber = Integer.parseInt(choice);
-            stations = paths.get(pathNumber - 1).split(", ");
-        }
-
-        System.out.println("Your Route: ");
-        String direction = "";
-        if (line1Stations.contains(stations[0]) && line1Stations.contains(stations[1])) {
-            if (line1Stations.indexOf(stations[1]) - line1Stations.indexOf(stations[0]) > 0) {
-                direction = "New El-Marg";
-            } else {
-                direction = "Helwan";
-            }
-        } else if (line2Stations.contains(stations[0]) && line2Stations.contains(stations[1])) {
-            if (line2Stations.indexOf(stations[1]) - line2Stations.indexOf(stations[0]) > 0) {
-                direction = "El-Mounib";
-            } else {
-                direction = "Shubra El-Kheima";
-            }
-        } else if (line3Stations.contains(stations[0]) && line3Stations.contains(stations[1])) {
-            if (line3Stations.indexOf(stations[1]) - line3Stations.indexOf(stations[0]) > 0) {
-                direction = "Rod al-Farag Axis";
-            } else {
-                direction = "Adly Mansour";
-            }
-        }
-        for (int i = 0; i < stations.length; i++) {
-            System.out.print(stations[i] + " ");
-            // Check if the station is a switch station (Al-Shohadaa) and change the direction
-            if (stations[i].equals("Al-Shohadaa")) {
-                if (stations[i + 1].equals("Ghamra")) {
-                    if (!direction.equals("New El-Marg"))
-                        System.out.print("(Switch to New El-Marg Direction)");
-                    direction = "New El-Marg";
-                } else if (stations[i + 1].equals("Massara")) {
-                    if (!direction.equals("Shubra El-Kheima"))
-                        System.out.print("(Switch to Shubra El-Kheima Direction)");
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Attaba"))
-                    if (!direction.equals("El-Mounib")) {
-                        System.out.print("(Switch to El-Mounib Direction)");
-                        direction = "El-Mounib";
-                    } else if (stations[i + 1].equals("Orabi")) {
-                        if (!direction.equals("Helwan"))
-                            System.out.print("(Switch to Helwan Direction)");
-                        direction = "Helwan";
-                    }
-            }
-            // Check if the station is a switch station (Sadat) and change the direction
-            else if (stations[i].equals("Sadat")) {
-                if (stations[i + 1].equals("Opera")) {
-                    if (!direction.equals("El-Mounib"))
-                        System.out.print("(Switch to El-Mounib Direction)");
-                    direction = "El-Mounib";
-                } else if (stations[i + 1].equals("Mohamed Naguib")) {
-                    if (!direction.equals("Shubra El-Kheima"))
-                        System.out.print("(Switch to Shubra El-Kheima Direction)");
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Saad Zaghloul")) {
-                    if (!direction.equals("Helwan"))
-                        System.out.print("(Switch to Helwan Direction)");
-                    direction = "Helwan";
-                } else if (stations[i + 1].equals("Nasser")) {
-                    if (!direction.equals("New El-Marg"))
-                        System.out.print("(Switch to New El-Marg Direction)");
-                    direction = "New El-Marg";
-                }
-            }
-            // Check if the station is a switch station (Attaba) and change the direction
-            else if (stations[i].equals("Attaba")) {
-                if (stations[i + 1].equals("Al-Shohadaa")) {
-                    if (!direction.equals("Shubra El-Kheima"))
-                        System.out.print("(Switch to Shubra El-Kheima Direction)");
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Mohamed Naguib")) {
-                    if (!direction.equals("El-Mounib"))
-                        System.out.print("(Switch to El-Mounib Direction)");
-                    direction = "El-Mounib";
-                } else if (stations[i + 1].equals("Bab El Shaaria")) {
-                    if (!direction.equals("Adly Mansour"))
-                        System.out.print("(Switch to Adly Mansour Direction)");
-                    direction = "Adly Mansour";
-                } else if (stations[i + 1].equals("Nasser")) {
-                    if (!direction.equals("Rod al-Farag Axis"))
-                        System.out.print("(Switch to Rod al-Farag Axis  Direction)");
-                    direction = "Rod al-Farag Axis ";
-                }
-            }
-            // Check if the station is a switch station (Nasser) and change the direction
-            else if (stations[i].equals("Nasser")) {
-                if (stations[i + 1].equals("Maspero")) {
-                    if (!direction.equals("Rod al-Farag Axis "))
-                        System.out.print("(Switch to Rod al-Farag Axis  Direction)");
-                    direction = "Rod al-Farag Axis ";
-                } else if (stations[i + 1].equals("Attaba")) {
-                    if (!direction.equals("Adly Mansour"))
-                        System.out.print("(Switch to Adly Mansour Direction)");
-                    direction = "Adly Mansour";
-                } else if (stations[i + 1].equals("Sadat")) {
-                    if (!direction.equals("Helwan"))
-                        System.out.print("(Switch to Helwan Direction)");
-                    direction = "Helwan";
-                } else if (stations[i + 1].equals("Orabi")) {
-                    if (!direction.equals("New El-Marg"))
-                        System.out.print("(Switch to New El-Marg Direction)");
-                    direction = "New El-Marg";
-                }
-            }
-            if (i + 1 < stations.length)
-                System.out.print(" ->  ");
-        }*/
 
 }

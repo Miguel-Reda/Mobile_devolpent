@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ public class PathsActivity extends AppCompatActivity {
     TextView pathsTextView;
     TextView shortestPathTextView;
     Spinner chooseSpinner;
+    Button pathButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +27,7 @@ public class PathsActivity extends AppCompatActivity {
         pathsTextView = findViewById(R.id.pathsTextView);
         shortestPathTextView = findViewById(R.id.shortestPathTextView);
         chooseSpinner = findViewById(R.id.chooseSpinner);
+//        pathButton = findViewById(R.id.pathButton);
         ArrayList<String> paths = getIntent().getStringArrayListExtra("paths");
         String shortestPath = "";
         int shortestPathLength = Integer.MAX_VALUE;
@@ -41,25 +45,26 @@ public class PathsActivity extends AppCompatActivity {
         }
         pathsTextView.setText(pathsString.toString());
         pathsString.append("Shortest Path (").append(shortestPathLength).append(" stations): ").append(shortestPath).append("\n");
+        pathsString.insert(0, "Please choose a path to view its route:\n");
         ArrayAdapter<String>adapterChoice = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, pathsString.toString().split("\n"));
         adapterChoice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chooseSpinner.setAdapter(adapterChoice);
         shortestPathTextView.setText("Shortest Path (" + shortestPathLength + " stations): " + shortestPath);
 
-        chooseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedPath = parent.getItemAtPosition(position).toString();
-                Intent intent = new Intent(PathsActivity.this, RouteActivity.class);
-                intent.putExtra("path", selectedPath);
-                startActivity(intent);
-            }
+//        chooseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//                pathButton.setEnabled(true);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parentView) {
+//                pathButton.setEnabled(false);
+//            }
+//
+//        });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
         
     }
     public void GoToMap(View view) {
@@ -68,7 +73,13 @@ public class PathsActivity extends AppCompatActivity {
         Toast.makeText(this , "This a Map to guide you.",Toast.LENGTH_SHORT).show();
     }
     public void GoToRoute(View view) {
-        Intent b =new Intent(this ,RouteActivity.class);
-        startActivity(b);
+        if(chooseSpinner.getSelectedItem().toString().equals("Please choose a path to view its route:")) {
+            Toast.makeText(this, "Please choose a path", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String selectedPath = chooseSpinner.getSelectedItem().toString();
+        Intent intent = new Intent(PathsActivity.this, RouteActivity.class);
+        intent.putExtra("path", selectedPath);
+        startActivity(intent);
     }
 }

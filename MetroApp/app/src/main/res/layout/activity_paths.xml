@@ -7,14 +7,14 @@
     tools:context=".PathsActivity">
 
     <Button
-        android:id="@+id/GoToRoute"
+        android:id="@+id/pathbutton"
         android:layout_width="116dp"
         android:layout_height="65dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="#E42828"
         android:layoutDirection="ltr"
         android:onClick="GoToRoute"
-        android:text="done"
+        android:text="Done"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
@@ -35,30 +35,30 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.379"
+        app:layout_constraintHorizontal_bias="0.375"
         app:layout_constraintStart_toEndOf="@+id/PathTitle"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.07" />
+        app:layout_constraintVertical_bias="0.023" />
 
     <TextView
         android:id="@+id/PathTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Available Paths :"
         android:textColor="#E42828"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.012"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/pathsTextView"
-        android:layout_width="385dp"
-        android:layout_height="331dp"
+        android:layout_width="393dp"
+        android:layout_height="452dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
@@ -94,7 +94,7 @@
         android:layout_width="409dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/GoToRoute"
+        app:layout_constraintBottom_toTopOf="@+id/backbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
