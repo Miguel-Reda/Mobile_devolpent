@@ -23,13 +23,16 @@
             }
         }
         compileOptions {
+            // Flag to enable support for the new language APIs
+            coreLibraryDesugaringEnabled true
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
     }
 
     dependencies {
-
+        // For AGP 7.4+
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
         implementation libs.appcompat
         implementation libs.material
         implementation libs.activity

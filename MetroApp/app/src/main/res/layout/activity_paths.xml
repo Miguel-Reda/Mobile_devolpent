@@ -59,52 +59,67 @@
         android:id="@+id/scrollView2"
         android:layout_width="397dp"
         android:layout_height="388dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/shortestPathTextView"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/PathTitle">
 
         <TextView
             android:id="@+id/pathsTextView"
-            android:layout_width="393dp"
+            android:layout_width="353dp"
             android:layout_height="452dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="8sp"
             android:scrollbars="vertical"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/PathTitle"
             tools:text="Paths" />
     </ScrollView>
 
-    <TextView
-        android:id="@+id/shortestPathTextView"
-        android:layout_width="383dp"
-        android:layout_height="179dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="sans-serif"
-        android:scrollbars="vertical"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:autoSizeTextType="uniform"
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="385dp"
+        android:layout_height="143dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/chooseSpinner"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-        tools:text="Shortest path" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2">
+
+        <TextView
+            android:id="@+id/shortestPathTextView"
+            android:layout_width="353dp"
+            android:layout_height="452dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="8sp"
+            android:scrollbars="vertical"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:autoSizeTextType="none"
+            app:layout_constraintBottom_toTopOf="@+id/chooseSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+            tools:text="Shortest path" />
+    </ScrollView>
 
     <Spinner
         android:id="@+id/chooseSpinner"
@@ -114,6 +129,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shortestPathTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

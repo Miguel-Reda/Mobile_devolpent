@@ -1,12 +1,17 @@
 
 package com.radwan.metroapp;
 
+import android.os.Build;
+import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 public class Graph {
     private ArrayList<Vertex> vertices;
-    private static ArrayList<Vertex> visitedVertices = new ArrayList<Vertex>();
-    private static ArrayList<String> paths = new ArrayList<String>();
+    private ArrayList<Vertex> visitedVertices = new ArrayList<Vertex>();
+    private ArrayList<String> paths = new ArrayList<String>();
 
     public Graph() {
         this.vertices = new ArrayList<Vertex>();
@@ -20,7 +25,6 @@ public class Graph {
 
     public Vertex getVertex(String data) {
         for (Vertex v : this.vertices) {
-//            System.out.println(v.getData());
             if (v.getData().equalsIgnoreCase(data)) {
                 return v;
             }
@@ -28,19 +32,17 @@ public class Graph {
         return null;
     }
 
-    public ArrayList<Vertex> getVertices() {
-        return this.vertices;
-    }
 
     public void addEdge(Vertex vertex1, Vertex vertex2) {
         vertex1.addEdge(vertex2);
         vertex2.addEdge(vertex1);
     }
     
-    private static void depthFirstTraversal(Vertex start, Vertex end, String path) {
+    private void depthFirstTraversal(Vertex start, Vertex end, String path) {
         visitedVertices.add(start);
         path += start.getData() + ", ";
         if (start == end) {
+            path = path.substring(0, path.length() - 2);
             paths.add(path);
             visitedVertices.remove(end);
             return;
@@ -48,16 +50,23 @@ public class Graph {
         for (Edge e : start.getEdges()) {
             Vertex neighbor = e.getEnd();
             if (!visitedVertices.contains(neighbor)) {
-                Graph.depthFirstTraversal(neighbor, end, path);
+                depthFirstTraversal(neighbor, end, path);
             }
         }
         visitedVertices.remove(start);
     }
 
     public ArrayList<String> getAllPaths(Vertex start, Vertex end) {
-        String path = "";
-        depthFirstTraversal(start, end, path);
+        paths.clear();
+        visitedVertices.clear();
+        depthFirstTraversal(start, end, "");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            paths.sort((String path1, String path2) -> {
+                return path1.split(", ").length - path2.split(", ").length;
+            });
+        }
         return paths;
     }
+
 }
 
