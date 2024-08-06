@@ -2,10 +2,12 @@ package com.radwan.metroapp;
 
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,13 +20,15 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
     static Graph graph = new Graph();
-    Spinner startStationSpinner;
-    Spinner endStationSpinner;
-
+    String StartStation;
+    String EndStation;
+    List<String> Stations;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +39,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // Add lines to the list
-        ArrayList<String> Lines = new ArrayList<String>();
-        Collections.addAll(Lines, "Please Select Line", "Line 1", "Line 2", "Line 3");
 
         // Add stations to the lines
         ArrayList<String> line1Stations = new ArrayList<String>();
@@ -64,47 +64,38 @@ public class MainActivity extends AppCompatActivity {
         "Bab El Shaaria", "Attaba", "Nasser", "Maspero", "Zamalek", "Kit Kat", "Sudan", "Imbaba",
         "El Bohy", "Ring Road", "Rod al-Farag Axis");
 
+        Stations = new ArrayList<String>();
+        Stations.addAll(line1Stations);
+        Stations.addAll(line2Stations);
+        Stations.addAll(line3Stations);
 
-        Spinner positionLineSpinner;
-        Spinner arrivalLineSpinner;
+
+        Stations = Stations.stream()
+                                .distinct()
+                                .sorted().collect(Collectors.toList());
+
+
+        AutoCompleteTextView startStationAutoComplete = findViewById(R.id.startStationAutoComplete);
+        AutoCompleteTextView endStationAutoComplete = findViewById(R.id.endStationAutoComplete);
         
-        // Set the adapter for the spinners
-        positionLineSpinner = findViewById(R.id.positionLineSpinner);
-        arrivalLineSpinner = findViewById(R.id.arrivalLineSpinner);
-        startStationSpinner = findViewById(R.id.startStationSpinner);
-        endStationSpinner = findViewById(R.id.endStationSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Stations);
+        startStationAutoComplete.setAdapter(adapter);
+        startStationAutoComplete.setThreshold(1);
 
-        ArrayAdapter<String> adapterLine = new ArrayAdapter(this, android.R.layout.simple_spinner_item,Lines);
-        adapterLine.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        positionLineSpinner.setAdapter(adapterLine);
-        arrivalLineSpinner.setAdapter(adapterLine);
+        endStationAutoComplete.setAdapter(adapter);
+        endStationAutoComplete.setThreshold(1);
+
         
-        positionLineSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = (String) parent.getItemAtPosition(position);
-                ArrayAdapter<String> adapter = fillSpinners(selectedItem, line1Stations, line2Stations, line3Stations);
-                startStationSpinner.setAdapter(adapter);
-            }
+        startStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedItem = (String) parent.getItemAtPosition(position);
+            StartStation = selectedItem;
+        });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // Do nothing
-            }
+        endStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedItem = (String) parent.getItemAtPosition(position);
+            EndStation = selectedItem;
         });
-        arrivalLineSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = (String) parent.getItemAtPosition(position);
-                ArrayAdapter<String> adapter = fillSpinners(selectedItem, line1Stations, line2Stations, line3Stations);
-                endStationSpinner.setAdapter(adapter);
-            }
-            
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // Do nothing
-            }
-        });
+        Toast.makeText(this, StartStation + " " + EndStation, Toast.LENGTH_SHORT).show();
         addVertices(graph, line1Stations);
         addVertices(graph, line2Stations);
         addVertices(graph, line3Stations);
@@ -123,39 +114,38 @@ public class MainActivity extends AppCompatActivity {
 
     // Handle the done button click
     public void done(View view) {
-        if(startStationSpinner.getSelectedItem().toString().equals("Please Select Station") || endStationSpinner.getSelectedItem().toString().equals("Please Select Station")) {
-            Toast.makeText(this, "Please select a station", Toast.LENGTH_SHORT).show();
+        if(StartStation.equals("Please Select Station")){
+            Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
+            // Animation for StartStationAutoComplete
             return;
         }
-        if(startStationSpinner.getSelectedItem().toString().equals(endStationSpinner.getSelectedItem().toString())) {
+        else if(EndStation.equals("Please Select Station")){
+            Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
+            // Animation for EndStationAutoComplete
+            return;
+        }
+        else if(StartStation.equals(EndStation)) {
             Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
+            // Animation for StartStationAutoComplete and EndStationAutoComplete
             return;
         }
-        Vertex start = graph.getVertex(startStationSpinner.getSelectedItem().toString());
-        Vertex end = graph.getVertex(endStationSpinner.getSelectedItem().toString());
+        else if(!Stations.contains(StartStation)){
+            Toast.makeText(this, "Start station not found", Toast.LENGTH_SHORT).show();
+            // Animation for StartStationAutoComplete
+            return;
+        }
+        else if(!Stations.contains(EndStation)){
+            Toast.makeText(this, "End station not found", Toast.LENGTH_SHORT).show();
+            // Animation for EndStationAutoComplete
+            return;
+        }
+        
+        Vertex start = graph.getVertex(StartStation);
+        Vertex end = graph.getVertex(EndStation);
         ArrayList<String> paths = graph.getAllPaths(start, end);
         Intent intent = new Intent(this, PathsActivity.class);
         intent.putStringArrayListExtra("paths", paths);
-//        graph.clearGraph();
         startActivity(intent);
         
-    }
-
-    // Fill the spinners with the stations of the selected line
-    public ArrayAdapter<String> fillSpinners(String selectedItem, ArrayList<String> line1Stations, ArrayList<String> line2Stations, ArrayList<String> line3Stations) {
-        ArrayList<String> items = new ArrayList<>();
-        items.add("Please Select Station");
-        switch (selectedItem) {
-            case "Line 1":
-                items.addAll(line1Stations);
-                break;
-            case "Line 2":
-                items.addAll(line2Stations);
-                break;
-            case "Line 3":
-                items.addAll(line3Stations);
-                break;
-        }
-        return new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
     }
 }

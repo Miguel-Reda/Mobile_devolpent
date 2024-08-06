@@ -13,7 +13,6 @@
         android:id="@+id/titleText"
         android:layout_width="283dp"
         android:layout_height="65dp"
-        android:layout_marginTop="14dp"
         android:layoutDirection="ltr"
         android:text="Cairo Metro "
         android:textAlignment="center"
@@ -23,106 +22,76 @@
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoImage" />
-
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="189dp"
-        android:layout_height="140dp"
-        android:layout_marginTop="16dp"
-        android:layoutDirection="ltr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/metro1"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="4dp" />
 
     <TextView
         android:id="@+id/startingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layoutDirection="ltr"
         android:text="Starting Station:"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleText" />
 
-    <Spinner
-        android:id="@+id/positionLineSpinner"
-        android:layout_width="228dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="64dp"
-        android:layoutDirection="ltr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startingText" />
-
-    <Spinner
-        android:id="@+id/startStationSpinner"
+    <AutoCompleteTextView
+        android:id="@+id/startStationAutoComplete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/spinner_background"
+        android:hint="Please Select Station"
         android:layoutDirection="ltr"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/positionLineSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/startingText" />
+
 
     <TextView
         android:id="@+id/endText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:layoutDirection="ltr"
         android:text="Ending Station:"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintHorizontal_bias="0.074"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startStationSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/startStationAutoComplete" />
 
-    <Spinner
-        android:id="@+id/arrivalLineSpinner"
-        android:layout_width="228dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:layoutDirection="ltr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.131"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endText" />
-
-    <Spinner
-        android:id="@+id/endStationSpinner"
+    <AutoCompleteTextView
+        android:id="@+id/endStationAutoComplete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/spinner_background"
+        android:hint="Please Select Station"
         android:layoutDirection="ltr"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrivalLineSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/endText" />
 
     <Button
         android:id="@+id/backbtn"
         android:layout_width="116dp"
         android:layout_height="65dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#E42828"
         android:layoutDirection="ltr"
         android:onClick="done"
@@ -132,7 +101,8 @@
         android:textSize="24sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.189"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endStationSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/endStationAutoComplete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
