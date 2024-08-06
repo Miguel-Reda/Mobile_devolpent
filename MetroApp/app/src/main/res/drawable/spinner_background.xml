@@ -8,6 +8,9 @@
         </shape>
     </item>
     <item android:right="10dp">
-        <bitmap android:src="@android:drawable/arrow_down_float" android:gravity="right|center_vertical"/>
+        <bitmap android:src="@android:drawable/arrow_down_float"
+            android:gravity="right|center_vertical"
+            android:tint="#000000"
+            />
     </item>
 </layer-list>

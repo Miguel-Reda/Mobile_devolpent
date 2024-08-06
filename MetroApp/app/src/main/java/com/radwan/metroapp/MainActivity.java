@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class MainActivity extends AppCompatActivity {
 
     static Graph graph = new Graph();
-    String StartStation;
-    String EndStation;
+    String StartStation ="";
+    String EndStation = "";
     List<String> Stations;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
         Stations.addAll(line3Stations);
 
 
-        Stations = Stations.stream()
-                                .distinct()
-                                .sorted().collect(Collectors.toList());
+        Stations = Stations .stream()
+                            .distinct()
+                            .sorted().collect(Collectors.toList());
 
 
         AutoCompleteTextView startStationAutoComplete = findViewById(R.id.startStationAutoComplete);
@@ -85,17 +85,14 @@ public class MainActivity extends AppCompatActivity {
         endStationAutoComplete.setAdapter(adapter);
         endStationAutoComplete.setThreshold(1);
 
-        
+
         startStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedItem = (String) parent.getItemAtPosition(position);
-            StartStation = selectedItem;
+            StartStation = (String) parent.getItemAtPosition(position);
         });
 
         endStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedItem = (String) parent.getItemAtPosition(position);
-            EndStation = selectedItem;
+            EndStation = (String) parent.getItemAtPosition(position);
         });
-        Toast.makeText(this, StartStation + " " + EndStation, Toast.LENGTH_SHORT).show();
         addVertices(graph, line1Stations);
         addVertices(graph, line2Stations);
         addVertices(graph, line3Stations);
@@ -114,12 +111,14 @@ public class MainActivity extends AppCompatActivity {
 
     // Handle the done button click
     public void done(View view) {
-        if(StartStation.equals("Please Select Station")){
+//        Toast.makeText(this, StartStation + " " + EndStation, Toast.LENGTH_SHORT).show();
+
+        if(StartStation.isEmpty()){
             Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete
             return;
         }
-        else if(EndStation.equals("Please Select Station")){
+        else if(EndStation.isEmpty()){
             Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
             // Animation for EndStationAutoComplete
             return;
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             // Animation for EndStationAutoComplete
             return;
         }
-        
+
         Vertex start = graph.getVertex(StartStation);
         Vertex end = graph.getVertex(EndStation);
         ArrayList<String> paths = graph.getAllPaths(start, end);
