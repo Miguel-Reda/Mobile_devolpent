@@ -93,6 +93,41 @@ public class MainActivity extends AppCompatActivity {
         endStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             EndStation = (String) parent.getItemAtPosition(position);
         });
+        // Show all options when the AutoCompleteTextView is clicked or gains focus
+        startStationAutoComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startStationAutoComplete.showDropDown();
+            }
+        });
+
+        // Optionally, show dropdown when the view gains focus
+        startStationAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    startStationAutoComplete.showDropDown();
+                }
+            }
+        });
+
+        // Show all options when the AutoCompleteTextView is clicked or gains focus
+        endStationAutoComplete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endStationAutoComplete.showDropDown();
+            }
+        });
+
+        // Optionally, show dropdown when the view gains focus
+        endStationAutoComplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    endStationAutoComplete.showDropDown();
+                }
+            }
+        });
         addVertices(graph, line1Stations);
         addVertices(graph, line2Stations);
         addVertices(graph, line3Stations);
