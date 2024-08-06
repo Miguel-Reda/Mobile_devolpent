@@ -1,0 +1,130 @@
+[
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "com.radwan.metroapp-pngs-27:/drawable-anydpi-v24/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_metroon.png.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/metroon.png"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_metrof.png.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/metrof.png"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxhdpi_metro1.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxhdpi/metro1.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/layout_activity_main.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/layout_activity_map.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/layout/activity_map.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_map.jpg.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/map.jpg"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-anydpi-v26_metro1.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-anydpi-v26/metro1.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_ellipes.png.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/ellipes.png"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xhdpi_metro1.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xhdpi/metro1.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/layout_activity_route.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/layout/activity_route.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_ellipseb.png.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/ellipseb.png"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/xml_data_extraction_rules.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/layout_activity_paths.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/layout/activity_paths.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-hdpi_metro1.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-hdpi/metro1.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-mdpi_metro1.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-mdpi/metro1.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/xml_backup_rules.xml.flat",
+        "source": "com.radwan.metroapp-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxxhdpi_metro1.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxxhdpi/metro1.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.radwan.metroapp-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.radwan.metroapp-debug-31:/drawable_metro1.png.flat",
+        "source": "com.radwan.metroapp-main-33:/drawable/metro1.png"
+    }
+]
