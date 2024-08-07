@@ -4,6 +4,7 @@ package com.radwan.metroapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -18,6 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.github.nisrulz.sensey.Sensey;
+import com.github.nisrulz.sensey.ShakeDetector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,25 +28,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShakeDetector.ShakeListener {
     Graph graph = new Graph();
     List<String> line1Stations = List.of("Helwan", "Ain Helwan", "Helwan University",
-        "Wadi Hof", "El-Maasara", "Hadayek Helwan", "Tora El-Asmant", "Kolet El-Maadi",
-        "Tora El-Balad", "Sakanat El-Maadi", "Maadi", "Hadayek El-Maadi", "Dar El-Salam",
-        "Zahraa El-Maadi", "Mar Girgis", "El-Malek El-Saleh", "Sayeda Zeinab", "Saad Zaghloul",
-        "Sadat", "Nasser", "Orabi", "Al-Shohadaa", "Ghamra", "El-Demerdash", "Manshiet El-Sadr",
-        "Kobri El-Qobba", "Hammamat El-Qobba", "Saray El-Qobba", "Hadayek El-Zaitoun",
-        "Helmeyet El-Zaitoun", "El-Matareyya", "Ain Shams", "Ezbet El-Nakhl", "El-Marg",
-        "New El-Marg");
+            "Wadi Hof",  "Hadayek Helwan","El-Maasara", "Tora El-Asmant", "Kolet El-Maadi",
+            "Tora El-Balad", "Sakanat El-Maadi", "Maadi", "Hadayek El-Maadi", "Dar El-Salam",
+            "Zahraa El-Maadi", "Mar Girgis", "El-Malek El-Saleh", "Sayeda Zeinab", "Saad Zaghloul",
+            "Sadat", "Nasser", "Orabi", "Al-Shohadaa", "Ghamra", "El-Demerdash", "Manshiet El-Sadr",
+            "Kobri El-Qobba", "Hammamat El-Qobba", "Saray El-Qobba", "Hadayek El-Zaitoun",
+            "Helmeyet El-Zaitoun", "El-Matareyya", "Ain Shams", "Ezbet El-Nakhl", "El-Marg",
+            "New El-Marg");
     List<String> line2Stations = List.of("Shubra El-Kheima", "Kolleyet El-Zeraa",
-        "El-Mazallat", "El-Khalafawi", "Saint Teresa", "Rod El-Farag", "Massara", "Al-Shohadaa",
-        "Attaba", "Mohamed Naguib", "Sadat", "Opera", "Dokki", "El Bohoth", "Cairo University",
-        "Faisal", "Giza", "Omm El-Misryeen", "Sakiat Mekki", "El-Mounib");
+            "El-Mazallat", "El-Khalafawi", "Saint Teresa", "Rod El-Farag", "Massara", "Al-Shohadaa",
+            "Attaba", "Mohamed Naguib", "Sadat", "Opera", "Dokki", "El Bohoth", "Cairo University",
+            "Faisal", "Giza", "Omm El-Misryeen", "Sakiat Mekki", "El-Mounib");
     List<String> line3Stations = List.of("Adly Mansour", "El Haykestep", "Omar Ibn El Khattab",
-        "Qobaa", "Hesham Barakat", "El Nozha", "Nadi El Shams", "Alf Maskan", "Heliopolis", "Haroun",
-        "Al Ahram", "Koleyet El Banat", "Stadium", "Fair Zone", "Abbassia", "Abdou Pasha", "El Geish",
-        "Bab El Shaaria", "Attaba", "Nasser", "Maspero", "Zamalek", "Kit Kat", "Sudan", "Imbaba",
-        "El Bohy", "Ring Road", "Rod al-Farag Axis");
+            "Qobaa", "Hesham Barakat", "El Nozha", "Nadi El Shams", "Alf Maskan", "Heliopolis", "Haroun",
+            "Al Ahram", "Koleyet El Banat", "Stadium", "El Maarad", "Abbassia", "Abdou Pasha", "El Geish",
+            "Bab El Shaaria", "Attaba", "Nasser", "Maspero", "Safaa Hegazy", "Kit Kat", "Sudan", "Imbaba",
+            "El Bohy","Al Qawmia" , "Ring Road", "Rod al-Farag Axis");
     List<String> totalStations;
     AutoCompleteTextView startStationAutoComplete;
     AutoCompleteTextView endStationAutoComplete;
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        startStationAutoComplete=findViewById(R.id.startStationAutoComplete);
+        endStationAutoComplete=findViewById(R.id.endStationAutoComplete);
+        Sensey.getInstance().init(this);
+        Sensey.getInstance().startShakeDetection(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -77,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         startStationAutoComplete = findViewById(R.id.startStationAutoComplete);
         endStationAutoComplete = findViewById(R.id.endStationAutoComplete);
-        
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,totalStations.stream().distinct().sorted().collect(Collectors.toList()));
         startStationAutoComplete.setAdapter(adapter);
         startStationAutoComplete.setThreshold(1);
@@ -112,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         addVertices(graph, line1Stations);
         addVertices(graph, line2Stations);
         addVertices(graph, line3Stations);
-        
+
     }
 
     // Add vertices to the graph
@@ -128,30 +135,42 @@ public class MainActivity extends AppCompatActivity {
     public void done(View view) {
 //        Toast.makeText(this, StartStation + " " + EndStation, Toast.LENGTH_SHORT).show();
         if(StartStation.isEmpty()){
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
             Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete
             return;
         }
         else if(EndStation.isEmpty()){
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
             Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
             // Animation for EndStationAutoComplete
             return;
         }
         else if(StartStation.equals(EndStation)) {
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
+
             Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete and EndStationAutoComplete
             return;
         }
         else if(!totalStations.contains(StartStation)){
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
+
             Toast.makeText(this, "Start station not found, Please select a valid start station", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete
             return;
         }
         else if(!totalStations.contains(EndStation)){
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
+
             Toast.makeText(this, "End station not found, Please select a valid end station", Toast.LENGTH_SHORT).show();
             // Animation for EndStationAutoComplete
             return;
         }
+        YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
+        YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
+
         // Animation for StartStationAutoComplete and EndStationAutoComplete
 //        SharedPreferences.Editor editor = prevousData.edit();
 //        editor.putString("StartStation", StartStation);
@@ -163,32 +182,56 @@ public class MainActivity extends AppCompatActivity {
         Vertex start = graph.getVertex(StartStation);
         Vertex end = graph.getVertex(EndStation);
         ArrayList<String> paths = graph.getAllPaths(start, end);
+//        Toast.makeText(this, "Paths: " + paths.size(), Toast.LENGTH_SHORT).show();
 
         fillSummaryText(paths);
+        // لو عايزه يستنى خمس دثواني و بعدها يروح للصفحة اللي بعدها
+/*
+
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(this, PathsActivity.class);
+            intent.putStringArrayListExtra("paths", paths);
+            startActivity(intent);
+        }, 5000);
+*/
+
+
+
     }
+
     // Handle the swap button click event
     public void swap_station(View view) {
         if(StartStation.isEmpty()){
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
             Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete
             return;
         }
         else if(EndStation.isEmpty()){
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
+
             Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
             // Animation for EndStationAutoComplete
             return;
         }
         else if(StartStation.equals(EndStation)) {
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
+
             Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete and EndStationAutoComplete
             return;
         }
         else if(!totalStations.contains(StartStation)){
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
+
             Toast.makeText(this, "Start station not found, Please select a valid start station", Toast.LENGTH_SHORT).show();
             // Animation for StartStationAutoComplete
             return;
         }
         else if(!totalStations.contains(EndStation)){
+            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
+
             Toast.makeText(this, "End station not found, Please select a valid end station", Toast.LENGTH_SHORT).show();
             // Animation for EndStationAutoComplete
             return;
@@ -223,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> paths = graph.getAllPaths(start, end);
         fillSummaryText(paths);
     }
-
 
     private void fillSummaryText(ArrayList<String> paths) {
         StringBuilder summary = new StringBuilder();
@@ -264,12 +306,12 @@ public class MainActivity extends AppCompatActivity {
         summaryText.setText(summary.toString());
     }
     private String getDirection() {
-        if (line1Stations.contains(stations[1]) && line1Stations.contains(stations[2])) {
-            return line1Stations.indexOf(stations[2]) > line1Stations.indexOf(stations[1]) ? "New El-Marg" : "Helwan";
-        } else if (line2Stations.contains(stations[1]) && line2Stations.contains(stations[2])) {
-            return line2Stations.indexOf(stations[2]) > line2Stations.indexOf(stations[1]) ? "El-Mounib" : "Shubra El-Kheima";
-        } else if (line3Stations.contains(stations[1]) && line3Stations.contains(stations[2])) {
-            return line3Stations.indexOf(stations[2]) > line3Stations.indexOf(stations[1]) ? "Rod al-Farag Axis" : "Adly Mansour";
+        if (line1Stations.contains(stations[0]) && line1Stations.contains(stations[1])) {
+            return line1Stations.indexOf(stations[1]) > line1Stations.indexOf(stations[0]) ? "New El-Marg" : "Helwan";
+        } else if (line2Stations.contains(stations[0]) && line2Stations.contains(stations[1])) {
+            return line2Stations.indexOf(stations[1]) > line2Stations.indexOf(stations[0]) ? "El-Mounib" : "Shubra El-Kheima";
+        } else if (line3Stations.contains(stations[0]) && line3Stations.contains(stations[1])) {
+            return line3Stations.indexOf(stations[1]) > line3Stations.indexOf(stations[0]) ? "Rod al-Farag Axis" : "Adly Mansour";
         }
         return "";
     }
@@ -332,10 +374,28 @@ public class MainActivity extends AppCompatActivity {
         int minutes = expectedTime % 60;
 
         return hours > 0 ?
-                  String.format("\n\nExpected time: %d hours and %d minutes", hours, minutes)
+                String.format("\n\nExpected time: %d hours and %d minutes", hours, minutes)
                 : String.format("\n\nExpected time: %d minutes", minutes);
     }
     private int getTicketPrice(int numberOfStations) {
         return numberOfStations < 10 ? 5 : 7;
+    }
+
+    @Override
+    public void onShakeDetected() {
+
+
+    }
+
+    @Override
+    public void onShakeStopped() {
+        summaryText.setText("");
+        // Clear the AutoCompleteTextView fields
+        startStationAutoComplete.setText("");
+        endStationAutoComplete.setText("");
+
+        // Reset StartStation and EndStation variables
+        StartStation = "";
+        EndStation = "";
     }
 }
