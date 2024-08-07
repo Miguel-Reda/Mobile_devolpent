@@ -22,13 +22,28 @@ import com.daimajia.androidanimations.library.YoYo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
     Graph graph = new Graph();
-    ArrayList<String> line1Stations;
-    ArrayList<String> line2Stations;
-    ArrayList<String> line3Stations;
+    List<String> line1Stations = List.of("Helwan", "Ain Helwan", "Helwan University",
+        "Wadi Hof", "El-Maasara", "Hadayek Helwan", "Tora El-Asmant", "Kolet El-Maadi",
+        "Tora El-Balad", "Sakanat El-Maadi", "Maadi", "Hadayek El-Maadi", "Dar El-Salam",
+        "Zahraa El-Maadi", "Mar Girgis", "El-Malek El-Saleh", "Sayeda Zeinab", "Saad Zaghloul",
+        "Sadat", "Nasser", "Orabi", "Al-Shohadaa", "Ghamra", "El-Demerdash", "Manshiet El-Sadr",
+        "Kobri El-Qobba", "Hammamat El-Qobba", "Saray El-Qobba", "Hadayek El-Zaitoun",
+        "Helmeyet El-Zaitoun", "El-Matareyya", "Ain Shams", "Ezbet El-Nakhl", "El-Marg",
+        "New El-Marg");
+    List<String> line2Stations = List.of("Shubra El-Kheima", "Kolleyet El-Zeraa",
+        "El-Mazallat", "El-Khalafawi", "Saint Teresa", "Rod El-Farag", "Massara", "Al-Shohadaa",
+        "Attaba", "Mohamed Naguib", "Sadat", "Opera", "Dokki", "El Bohoth", "Cairo University",
+        "Faisal", "Giza", "Omm El-Misryeen", "Sakiat Mekki", "El-Mounib");
+    List<String> line3Stations = List.of("Adly Mansour", "El Haykestep", "Omar Ibn El Khattab",
+        "Qobaa", "Hesham Barakat", "El Nozha", "Nadi El Shams", "Alf Maskan", "Heliopolis", "Haroun",
+        "Al Ahram", "Koleyet El Banat", "Stadium", "Fair Zone", "Abbassia", "Abdou Pasha", "El Geish",
+        "Bab El Shaaria", "Attaba", "Nasser", "Maspero", "Zamalek", "Kit Kat", "Sudan", "Imbaba",
+        "El Bohy", "Ring Road", "Rod al-Farag Axis");
     List<String> totalStations;
     AutoCompleteTextView startStationAutoComplete;
     AutoCompleteTextView endStationAutoComplete;
@@ -37,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     TextView summaryText;
     String[] stations;
     SharedPreferences prevousData;
+    StringBuilder routeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,45 +66,19 @@ public class MainActivity extends AppCompatActivity {
         });
         summaryText = findViewById(R.id.summaryText);
         prevousData = getSharedPreferences("prevousData", MODE_PRIVATE);
-        // Add stations to the lines
-        line1Stations = new ArrayList<String>();
-        Collections.addAll(line1Stations, "Helwan", "Ain Helwan", "Helwan University",
-        "Wadi Hof", "El-Maasara", "Hadayek Helwan", "Tora El-Asmant", "Kolet El-Maadi",
-        "Tora El-Balad", "Sakanat El-Maadi", "Maadi", "Hadayek El-Maadi", "Dar El-Salam",
-        "Zahraa El-Maadi", "Mar Girgis", "El-Malek El-Saleh", "Sayeda Zeinab", "Saad Zaghloul",
-        "Sadat", "Nasser", "Orabi", "Al-Shohadaa", "Ghamra", "El-Demerdash", "Manshiet El-Sadr",
-        "Kobri El-Qobba", "Hammamat El-Qobba", "Saray El-Qobba", "Hadayek El-Zaitoun",
-        "Helmeyet El-Zaitoun", "El-Matareyya", "Ain Shams", "Ezbet El-Nakhl", "El-Marg",
-        "New El-Marg");
 
-        line2Stations = new ArrayList<String>();
-        Collections.addAll(line2Stations, "Shubra El-Kheima", "Kolleyet El-Zeraa",
-        "El-Mazallat", "El-Khalafawi", "Saint Teresa", "Rod El-Farag", "Massara", "Al-Shohadaa",
-        "Attaba", "Mohamed Naguib", "Sadat", "Opera", "Dokki", "El Bohoth", "Cairo University",
-        "Faisal", "Giza", "Omm El-Misryeen", "Sakiat Mekki", "El-Mounib");
 
-        line3Stations = new ArrayList<String>();
-        Collections.addAll(line3Stations, "Adly Mansour", "El Haykestep", "Omar Ibn El Khattab",
-        "Qobaa", "Hesham Barakat", "El Nozha", "Nadi El Shams", "Alf Maskan", "Heliopolis", "Haroun",
-        "Al Ahram", "Koleyet El Banat", "Stadium", "Fair Zone", "Abbassia", "Abdou Pasha", "El Geish",
-        "Bab El Shaaria", "Attaba", "Nasser", "Maspero", "Zamalek", "Kit Kat", "Sudan", "Imbaba",
-        "El Bohy", "Ring Road", "Rod al-Farag Axis");
-
-        totalStations = new ArrayList<String>();
+        totalStations = new ArrayList<>();
         totalStations.addAll(line1Stations);
         totalStations.addAll(line2Stations);
         totalStations.addAll(line3Stations);
 
 
-        totalStations = totalStations.stream()
-                            .distinct()
-                            .sorted().collect(Collectors.toList());
-
 
         startStationAutoComplete = findViewById(R.id.startStationAutoComplete);
         endStationAutoComplete = findViewById(R.id.endStationAutoComplete);
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, totalStations);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,totalStations.stream().distinct().sorted().collect(Collectors.toList()));
         startStationAutoComplete.setAdapter(adapter);
         startStationAutoComplete.setThreshold(1);
 
@@ -126,12 +116,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Add vertices to the graph
-    private void addVertices(Graph graph, ArrayList<String> lineStations) {
-        for (int i = 0; i < lineStations.size(); i++) {
+    private void addVertices(Graph graph, List<String> lineStations) {
+        graph.addVertex(lineStations.get(0));
+        for (int i = 1; i < lineStations.size(); i++) {
             graph.addVertex(lineStations.get(i));
-            if (i > 0) {
-                graph.addEdge(graph.getVertex(lineStations.get(i - 1)), graph.getVertex(lineStations.get(i)));
-            }
+            graph.addEdge(graph.getVertex(lineStations.get(i - 1)), graph.getVertex(lineStations.get(i)));
         }
     }
 
@@ -257,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         summary.append("\n\nDirection: ").append(direction);
 
         // Construct the route string
-        StringBuilder routeString = getRouteString(direction);
+        routeString = getRouteString();
         summary.append("\n\nShortest Path: ").append(routeString);
 
         // Display the number of stations
@@ -269,161 +258,84 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Display the ticket price
-        byte ticketPrice = getTicketPrice(numberOfStations);
+        byte ticketPrice = (byte) getTicketPrice(numberOfStations);
         summary.append("\n\nTicket Price: ").append(ticketPrice).append(" EGP\n\n");
-        
+
         summaryText.setText(summary.toString());
     }
     private String getDirection() {
-        String direction = "";
         if (line1Stations.contains(stations[1]) && line1Stations.contains(stations[2])) {
-            if (line1Stations.indexOf(stations[2]) - line1Stations.indexOf(stations[1]) > 0) {
-                direction = "New El-Marg";
-            } else {
-                direction = "Helwan";
-            }
+            return line1Stations.indexOf(stations[2]) > line1Stations.indexOf(stations[1]) ? "New El-Marg" : "Helwan";
         } else if (line2Stations.contains(stations[1]) && line2Stations.contains(stations[2])) {
-            if (line2Stations.indexOf(stations[2]) - line2Stations.indexOf(stations[1]) > 0) {
-                direction = "El-Mounib";
-            } else {
-                direction = "Shubra El-Kheima";
-            }
+            return line2Stations.indexOf(stations[2]) > line2Stations.indexOf(stations[1]) ? "El-Mounib" : "Shubra El-Kheima";
         } else if (line3Stations.contains(stations[1]) && line3Stations.contains(stations[2])) {
-            if (line3Stations.indexOf(stations[2]) - line3Stations.indexOf(stations[1]) > 0) {
-                direction = "Rod al-Farag Axis";
-            } else {
-                direction = "Adly Mansour";
-            }
+            return line3Stations.indexOf(stations[2]) > line3Stations.indexOf(stations[1]) ? "Rod al-Farag Axis" : "Adly Mansour";
         }
-        return direction;
+        return "";
     }
-
-    private StringBuilder getRouteString(String direction) {
+    private StringBuilder getRouteString() {
         StringBuilder routeString = new StringBuilder();
+        String direction = getDirection();
+
         for (int i = 0; i < stations.length; i++) {
-            routeString.append(stations[i]).append(" ");
-            // Check if the station is a switch station (Al-Shohadaa) and change the direction
-            if (stations[i].equals("Al-Shohadaa")) {
-                if (stations[i + 1].equals("Ghamra")) {
-                    if (!direction.equals("New El-Marg")){
-                        routeString.append("(Switch to New El-Marg Direction)");
-                    }
-                    direction = "New El-Marg";
-                } else if (stations[i + 1].equals("Massara")) {
-                    if (!direction.equals("Shubra El-Kheima")){
-                        routeString.append("(Switch to Shubra El-Kheima Direction)");
-                    }
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Attaba")) {
-                    if (!direction.equals("El-Mounib")){
-                        routeString.append("(Switch to El-Mounib Direction)");
-                    }
-                    direction = "El-Mounib";
-                } else if (stations[i + 1].equals("Orabi")) {
-                    if (!direction.equals("Helwan")){
-                        routeString.append("(Switch to Helwan Direction)");
-                    }
-                    direction = "Helwan";
-                }
-            }
-            // Check if the station is a switch station (Sadat) and change the direction
-            else if (stations[i].equals("Sadat")) {
-                if (stations[i + 1].equals("Opera")) {
-                    if (!direction.equals("El-Mounib")){
-                        routeString.append("(Switch to El-Mounib Direction)");
-                    }
-                    direction = "El-Mounib";
-                } else if (stations[i + 1].equals("Mohamed Naguib")) {
-                    if (!direction.equals("Shubra El-Kheima")){
-                        routeString.append("(Switch to Shubra El-Kheima Direction)");
-                    }
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Saad Zaghloul")) {
-                    if (!direction.equals("Helwan")){
-                        routeString.append("(Switch to Helwan Direction)");
-                    }
-                    direction = "Helwan";
-                } else if (stations[i + 1].equals("Nasser")) {
-                    if (!direction.equals("New El-Marg")){
-                        routeString.append("(Switch to New El-Marg Direction)");
-                    }
-                    direction = "New El-Marg";
-                }
-            }
-            // Check if the station is a switch station (Attaba) and change the direction
-            else if (stations[i].equals("Attaba")) {
-                if (stations[i + 1].equals("Al-Shohadaa")) {
-                    if (!direction.equals("Shubra El-Kheima")){
-                        routeString.append("(Switch to Shubra El-Kheima Direction)");
-                    }
-                    direction = "Shubra El-Kheima";
-                } else if (stations[i + 1].equals("Mohamed Naguib")) {
-                    if (!direction.equals("El-Mounib")){
-                        routeString.append("(Switch to El-Mounib Direction)");
-                    }
-                    direction = "El-Mounib";
-                } else if (stations[i + 1].equals("Bab El Shaaria")) {
-                    if (!direction.equals("Adly Mansour")){
-                        routeString.append("(Switch to Adly Mansour Direction)");
-                    }
-                    direction = "Adly Mansour";
-                } else if (stations[i + 1].equals("Nasser")) {
-                    if (!direction.equals("Rod al-Farag Axis")){
-                        routeString.append("(Switch to Rod al-Farag Axis Direction)");
-                    }
-                    direction = "Rod al-Farag Axis";
-                }
-            }
-            // Check if the station is a switch station (Nasser) and change the direction
-            else if (stations[i].equals("Nasser")) {
-                if (stations[i + 1].equals("Maspero")) {
-                    if (!direction.equals("Rod al-Farag Axis")){
-                        routeString.append("(Switch to Rod al-Farag Axis Direction)");
-                    }
-                    direction = "Rod al-Farag Axis";
-                } else if (stations[i + 1].equals("Attaba")) {
-                    if (!direction.equals("Adly Mansour")){
-                        routeString.append("(Switch to Adly Mansour Direction)");
-                    }
-                    direction = "Adly Mansour";
-                } else if (stations[i + 1].equals("Sadat")) {
-                    if (!direction.equals("Helwan")){
-                        routeString.append("(Switch to Helwan Direction)");
-                    }
-                    direction = "Helwan";
-                } else if (stations[i + 1].equals("Orabi")) {
-                    if (!direction.equals("New El-Marg")){
-                        routeString.append("(Switch to New El-Marg Direction)");
-                    }
-                    direction = "New El-Marg";
-                }
-            }
-            if (i + 1 < stations.length)
+            routeString.append(stations[i]);
+            if (i < stations.length - 1) {
+                direction = updateDirection(stations[i], stations[i + 1], direction);
                 routeString.append(" -> ");
+            }
         }
+
         return routeString;
+    }
+    private static final Map<String, Map<String, String>> SWITCH_STATIONS = Map.of(
+            "Al-Shohadaa", Map.of(
+                    "Ghamra", "New El-Marg",
+                    "Massara", "Shubra El-Kheima",
+                    "Attaba", "El-Mounib",
+                    "Orabi", "Helwan"
+            ),
+            "Sadat", Map.of(
+                    "Opera", "El-Mounib",
+                    "Mohamed Naguib", "Shubra El-Kheima",
+                    "Saad Zaghloul", "Helwan",
+                    "Nasser", "New El-Marg"
+            ),
+            "Attaba", Map.of(
+                    "Al-Shohadaa", "Shubra El-Kheima",
+                    "Mohamed Naguib", "El-Mounib",
+                    "Bab El Shaaria", "Adly Mansour",
+                    "Nasser", "Rod al-Farag Axis"
+            ),
+            "Nasser", Map.of(
+                    "Maspero", "Rod al-Farag Axis",
+                    "Attaba", "Adly Mansour",
+                    "Sadat", "Helwan",
+                    "Orabi", "New El-Marg"
+            )
+    );
+
+    private String updateDirection(String currentStation, String nextStation, String currentDirection) {
+        Map<String, String> stationDirections = SWITCH_STATIONS.get(currentStation);
+        if (stationDirections != null) {
+            String newDirection = stationDirections.get(nextStation);
+            if (newDirection != null && !newDirection.equals(currentDirection)) {
+                routeString.append("(Switch to ").append(newDirection).append(" Direction)");
+                return newDirection;
+            }
+        }
+        return currentDirection;
     }
 
-    private StringBuilder getTime(int numberOfStations) {
-        StringBuilder routeString = new StringBuilder();
-        int expectedTime = (numberOfStations * 2);
-        if (expectedTime >= 60) {
-            byte expectedTimeInHours = (byte) (expectedTime / 60);
-            byte expectedTimeInMinutes = (byte) (expectedTime % 60);
-            routeString.append("\n\nExpected time: ").append(expectedTimeInHours).append(" hours and ")
-                    .append(expectedTimeInMinutes).append(" minutes");
-        } else {
-            routeString.append("\n\nExpected time: ").append(expectedTime).append(" minutes");
-        }
-        return routeString;
+    private String getTime(int numberOfStations) {
+        int expectedTime = numberOfStations * 2;
+        int hours = expectedTime / 60;
+        int minutes = expectedTime % 60;
+
+        return hours > 0 ?
+                  String.format("\n\nExpected time: %d hours and %d minutes", hours, minutes)
+                : String.format("\n\nExpected time: %d minutes", minutes);
     }
-    private byte getTicketPrice(int numberOfStations){
-        byte ticketPrice;
-        if (numberOfStations < 10) {
-            ticketPrice = 5;
-        } else {
-            ticketPrice = 7;
-        }
-        return ticketPrice;
+    private int getTicketPrice(int numberOfStations) {
+        return numberOfStations < 10 ? 5 : 7;
     }
 }
