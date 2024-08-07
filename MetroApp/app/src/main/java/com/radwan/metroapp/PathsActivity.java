@@ -1,6 +1,5 @@
 package com.radwan.metroapp;
 
-import static com.radwan.metroapp.MainActivity.graph;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,16 +68,6 @@ public class PathsActivity extends AppCompatActivity {
         Toast.makeText(this , "This a Map to guide you.",Toast.LENGTH_SHORT).show();
     }
 
-    public void GoToRoute(View view) {
-        if(chooseSpinner.getSelectedItem().toString().equals("Please choose a path to view its route: ")) {
-            Toast.makeText(this, "Please choose a path", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String selectedPath = chooseSpinner.getSelectedItem().toString();
-        Intent intent = new Intent(PathsActivity.this, RouteActivity.class);
-        intent.putExtra("path", selectedPath);
-        startActivity(intent);
-    }
 
     @Override
     public void onBackPressed() {

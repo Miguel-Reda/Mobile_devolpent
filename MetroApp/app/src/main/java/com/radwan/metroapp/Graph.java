@@ -60,11 +60,10 @@ public class Graph {
         paths.clear();
         visitedVertices.clear();
         depthFirstTraversal(start, end, "");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            paths.sort((String path1, String path2) -> {
-                return path1.split(", ").length - path2.split(", ").length;
-            });
-        }
+        paths.sort((String path1, String path2) -> {
+            return path1.split(", ").length - path2.split(", ").length;
+        });
+
         return paths;
     }
 
