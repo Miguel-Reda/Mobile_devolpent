@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
                     textToSpeech.setLanguage(Locale.US);
+
+                    // Set speech rate and pitch
+                    textToSpeech.setSpeechRate(0.6f); // Slow down the speech
+                    textToSpeech.setPitch(1.2f);     // Raise the pitch
                 }
             }
         });
@@ -334,12 +338,12 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         // Display the ticket price
         byte ticketPrice = (byte) getTicketPrice(numberOfStations);
         summary.append("\n\nTicket Price: ").append(ticketPrice).append(" EGP\n\n");
-//        Speech = new StringBuilder();
-//        summary = speakTextSubString(summary);
-//        if(summary.toString().contains("~")) {
-//            Speech.append(" then ");
-//            summary = speakTextSubString(summary);
-//        }
+        Speech = new StringBuilder();
+        summary = speakTextSubString(summary);
+        if(summary.toString().contains("~")) {
+            Speech.append(" then ");
+            summary = speakTextSubString(summary);
+        }
 
         textToSpeech.speak(Speech, TextToSpeech.QUEUE_FLUSH, null, null);
         summaryText.setText(summary.toString());
