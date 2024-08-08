@@ -1,10 +1,10 @@
 package com.radwan.metroapp;
 
 
-import android.content.Intent;
+//import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -23,12 +23,16 @@ import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements ShakeDetector.ShakeListener {
+    private static final String START_STATION_KEY = "START_STATION";
+    private static final String END_STATION_KEY = "END_STATION";
+    private static final String PREVIOUS_DATA_PREF = "previousData";
+    private TextToSpeech textToSpeech;
+    StringBuilder Speech;
     Graph graph = new Graph();
     List<String> line1Stations = List.of("Helwan", "Ain Helwan", "Helwan University",
             "Wadi Hof",  "Hadayek Helwan","El-Maasara", "Tora El-Asmant", "Kolet El-Maadi",
@@ -54,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
     String EndStation = "";
     TextView summaryText;
     String[] stations;
-    SharedPreferences prevousData;
-    StringBuilder routeString;
+    SharedPreferences previousData;
+    StringBuilder route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +76,13 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
             return insets;
         });
         summaryText = findViewById(R.id.summaryText);
-        prevousData = getSharedPreferences("prevousData", MODE_PRIVATE);
+        previousData = getSharedPreferences(PREVIOUS_DATA_PREF, MODE_PRIVATE);
 
 
         totalStations = new ArrayList<>();
         totalStations.addAll(line1Stations);
         totalStations.addAll(line2Stations);
         totalStations.addAll(line3Stations);
-
-
 
         startStationAutoComplete = findViewById(R.id.startStationAutoComplete);
         endStationAutoComplete = findViewById(R.id.endStationAutoComplete);
@@ -92,7 +94,14 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         endStationAutoComplete.setAdapter(adapter);
         endStationAutoComplete.setThreshold(1);
 
-
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeech.setLanguage(Locale.US);
+                }
+            }
+        });
         startStationAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             StartStation = (String) parent.getItemAtPosition(position);
         });
@@ -120,6 +129,70 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         addVertices(graph, line2Stations);
         addVertices(graph, line3Stations);
 
+        
+        if (savedInstanceState != null) {
+            StartStation = savedInstanceState.getString(START_STATION_KEY, "");
+            EndStation = savedInstanceState.getString(END_STATION_KEY, "");
+        } else {
+            StartStation = previousData.getString(START_STATION_KEY, "");
+            EndStation = previousData.getString(END_STATION_KEY, "");
+        }
+
+        if (!StartStation.isEmpty()) {
+            startStationAutoComplete.setText(StartStation);
+        }
+        if (!EndStation.isEmpty()) {
+            endStationAutoComplete.setText(EndStation);
+        }
+
+//        if (!StartStation.isEmpty() && !EndStation.isEmpty()) {
+//            Vertex start = graph.getVertex(StartStation);
+//            Vertex end = graph.getVertex(EndStation);
+//            ArrayList<String> paths = graph.getAllPaths(start, end);
+//            fillSummaryText(paths);
+//        }
+
+
+    }
+
+    public StringBuilder speakTextSubString(StringBuilder fullText) {
+        int startIndex = fullText.indexOf("~");
+        fullText.setCharAt(startIndex, ' ');
+        int endIndex = fullText.indexOf("~");
+        fullText.setCharAt(endIndex, ' ');
+        
+        // Check if both '~' and '~' are present and in the correct order
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            String substring = fullText.substring(startIndex + 1, endIndex);
+            Speech.append(substring);
+        } else {
+            // Handle cases where the parentheses are not present or in the wrong order
+            // textToSpeech.speak("No valid text found between parentheses", TextToSpeech.QUEUE_FLUSH, null, null);
+        }
+        return fullText;
+    }
+    @Override
+    protected void onDestroy() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onDestroy();
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(START_STATION_KEY, StartStation);
+        outState.putString(END_STATION_KEY, EndStation);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SharedPreferences.Editor editor = previousData.edit();
+        editor.putString(START_STATION_KEY, StartStation);
+        editor.putString(END_STATION_KEY, EndStation);
+        editor.apply();
     }
 
     // Add vertices to the graph
@@ -133,107 +206,70 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
 
     // Handle the done button click
     public void done(View view) {
-//        Toast.makeText(this, StartStation + " " + EndStation, Toast.LENGTH_SHORT).show();
         if(StartStation.isEmpty()){
             YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
             Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete
             return;
         }
         else if(EndStation.isEmpty()){
             YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
             Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
-            // Animation for EndStationAutoComplete
             return;
         }
         else if(StartStation.equals(EndStation)) {
             YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
             YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
-
             Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete and EndStationAutoComplete
             return;
         }
         else if(!totalStations.contains(StartStation)){
             YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
-
             Toast.makeText(this, "Start station not found, Please select a valid start station", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete
             return;
         }
         else if(!totalStations.contains(EndStation)){
             YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
-
             Toast.makeText(this, "End station not found, Please select a valid end station", Toast.LENGTH_SHORT).show();
-            // Animation for EndStationAutoComplete
             return;
         }
-        YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
-        YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
-
-        // Animation for StartStationAutoComplete and EndStationAutoComplete
-//        SharedPreferences.Editor editor = prevousData.edit();
-//        editor.putString("StartStation", StartStation);
-//        editor.putString("EndStation", EndStation);
-//        editor.apply();
+//        YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
+//        YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
         YoYo.with(Techniques.ZoomIn)
                 .duration(500)
                 .playOn(findViewById(R.id.backbtn));
         Vertex start = graph.getVertex(StartStation);
         Vertex end = graph.getVertex(EndStation);
         ArrayList<String> paths = graph.getAllPaths(start, end);
-//        Toast.makeText(this, "Paths: " + paths.size(), Toast.LENGTH_SHORT).show();
-
         fillSummaryText(paths);
-        // لو عايزه يستنى خمس دثواني و بعدها يروح للصفحة اللي بعدها
-/*
-
-        new Handler().postDelayed(() -> {
-            Intent intent = new Intent(this, PathsActivity.class);
-            intent.putStringArrayListExtra("paths", paths);
-            startActivity(intent);
-        }, 5000);
-*/
-
-
 
     }
 
     // Handle the swap button click event
     public void swap_station(View view) {
         if(StartStation.isEmpty()){
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
             Toast.makeText(this, "Please select a start station", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete
             return;
         }
         else if(EndStation.isEmpty()){
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
-
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
             Toast.makeText(this, "Please select an end station", Toast.LENGTH_SHORT).show();
-            // Animation for EndStationAutoComplete
             return;
         }
         else if(StartStation.equals(EndStation)) {
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
-
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
             Toast.makeText(this, "Start and end stations must be different", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete and EndStationAutoComplete
             return;
         }
         else if(!totalStations.contains(StartStation)){
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(startStationAutoComplete);
-
+            YoYo.with(Techniques.Bounce).duration(700).playOn(startStationAutoComplete);
             Toast.makeText(this, "Start station not found, Please select a valid start station", Toast.LENGTH_SHORT).show();
-            // Animation for StartStationAutoComplete
             return;
         }
         else if(!totalStations.contains(EndStation)){
-            YoYo.with(Techniques.Bounce).duration(700).repeat(1).playOn(endStationAutoComplete);
-
+            YoYo.with(Techniques.Bounce).duration(700).playOn(endStationAutoComplete);
             Toast.makeText(this, "End station not found, Please select a valid end station", Toast.LENGTH_SHORT).show();
-            // Animation for EndStationAutoComplete
             return;
         }
         // Animate the AutoCompleteTextViews
@@ -254,11 +290,6 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         startStationAutoComplete.setText(StartStation);
         endStationAutoComplete.setText(EndStation);
 
-        // Update the text in the SharedPreferences
-//        SharedPreferences.Editor editor = prevousData.edit();
-//        editor.putString("StartStation", StartStation);
-//        editor.putString("EndStation", EndStation);
-//        editor.apply();
 
         // update the summary text
         Vertex start = graph.getVertex(StartStation);
@@ -288,8 +319,9 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         summary.append("\n\nDirection: ").append(direction);
 
         // Construct the route string
-        routeString = getRouteString();
-        summary.append("\n\nShortest Path: ").append(routeString);
+        route = new StringBuilder();
+        route = getRouteString(direction);
+        summary.append("\n\nShortest Path: ").append(route);
 
         // Display the number of stations
         int numberOfStations = stations.length;
@@ -302,7 +334,14 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         // Display the ticket price
         byte ticketPrice = (byte) getTicketPrice(numberOfStations);
         summary.append("\n\nTicket Price: ").append(ticketPrice).append(" EGP\n\n");
+//        Speech = new StringBuilder();
+//        summary = speakTextSubString(summary);
+//        if(summary.toString().contains("~")) {
+//            Speech.append(" then ");
+//            summary = speakTextSubString(summary);
+//        }
 
+        textToSpeech.speak(Speech, TextToSpeech.QUEUE_FLUSH, null, null);
         summaryText.setText(summary.toString());
     }
     private String getDirection() {
@@ -315,59 +354,166 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         }
         return "";
     }
-    private StringBuilder getRouteString() {
+//    private StringBuilder getRouteString() {
+//        StringBuilder routeString = new StringBuilder();
+//        String direction = getDirection();
+//
+//        for (int i = 0; i < stations.length; i++) {
+//            routeString.append(stations[i]);
+//            if (i < stations.length - 1) {
+//                direction = updateDirection(stations[i], stations[i + 1], direction);
+//                routeString.append(" -> ");
+//            }
+//        }
+//
+//        return routeString;
+//    }
+//    private static final Map<String, Map<String, String>> SWITCH_STATIONS = Map.of(
+//            "Al-Shohadaa", Map.of(
+//                    "Ghamra", "New El-Marg",
+//                    "Massara", "Shubra El-Kheima",
+//                    "Attaba", "El-Mounib",
+//                    "Orabi", "Helwan"
+//            ),
+//            "Sadat", Map.of(
+//                    "Opera", "El-Mounib",
+//                    "Mohamed Naguib", "Shubra El-Kheima",
+//                    "Saad Zaghloul", "Helwan",
+//                    "Nasser", "New El-Marg"
+//            ),
+//            "Attaba", Map.of(
+//                    "Al-Shohadaa", "Shubra El-Kheima",
+//                    "Mohamed Naguib", "El-Mounib",
+//                    "Bab El Shaaria", "Adly Mansour",
+//                    "Nasser", "Rod al-Farag Axis"
+//            ),
+//            "Nasser", Map.of(
+//                    "Maspero", "Rod al-Farag Axis",
+//                    "Attaba", "Adly Mansour",
+//                    "Sadat", "Helwan",
+//                    "Orabi", "New El-Marg"
+//            )
+//    );
+//
+//    private String updateDirection(String currentStation, String nextStation, String currentDirection) {
+//        Map<String, String> stationDirections = SWITCH_STATIONS.get(currentStation);
+//        if (stationDirections != null) {
+//            String newDirection = stationDirections.get(nextStation);
+//            if (newDirection != null && !newDirection.equals(currentDirection)) {
+//                route.append("(Switch to ").append(newDirection).append(" Direction)");
+//                return newDirection;
+//            }
+//        }
+//        return currentDirection;
+//    }
+
+    private StringBuilder getRouteString(String direction) {
         StringBuilder routeString = new StringBuilder();
-        String direction = getDirection();
-
         for (int i = 0; i < stations.length; i++) {
-            routeString.append(stations[i]);
-            if (i < stations.length - 1) {
-                direction = updateDirection(stations[i], stations[i + 1], direction);
-                routeString.append(" -> ");
+            routeString.append(stations[i]).append(" ");
+            // Check if the station is a switch station (Al-Shohadaa) and change the direction
+            if (stations[i].equals("Al-Shohadaa")) {
+                if (stations[i + 1].equals("Ghamra")) {
+                    if (!direction.equals("New El-Marg")){
+                        routeString.append("(~Switch in Al-Shohadaa~ to New El-Marg Direction)");
+                    }
+                    direction = "New El-Marg";
+                } else if (stations[i + 1].equals("Massara")) {
+                    if (!direction.equals("Shubra El-Kheima")){
+                        routeString.append("(~Switch in Al-Shohadaa~ to Shubra El-Kheima Direction)");
+                    }
+                    direction = "Shubra El-Kheima";
+                } else if (stations[i + 1].equals("Attaba")) {
+                    if (!direction.equals("El-Mounib")){
+                        routeString.append("(~Switch in Al-Shohadaa~ to El-Mounib Direction)");
+                    }
+                    direction = "El-Mounib";
+                } else if (stations[i + 1].equals("Orabi")) {
+                    if (!direction.equals("Helwan")){
+                        routeString.append("(~Switch in Al-Shohadaa~ to Helwan Direction)");
+                    }
+                    direction = "Helwan";
+                }
             }
+            // Check if the station is a switch station (Sadat) and change the direction
+            else if (stations[i].equals("Sadat")) {
+                if (stations[i + 1].equals("Opera")) {
+                    if (!direction.equals("El-Mounib")){
+                        routeString.append("(~Switch in Sadat~ to El-Mounib Direction)");
+                    }
+                    direction = "El-Mounib";
+                } else if (stations[i + 1].equals("Mohamed Naguib")) {
+                    if (!direction.equals("Shubra El-Kheima")){
+                        routeString.append("(~Switch in Sadat~ to Shubra El-Kheima Direction)");
+                    }
+                    direction = "Shubra El-Kheima";
+                } else if (stations[i + 1].equals("Saad Zaghloul")) {
+                    if (!direction.equals("Helwan")){
+                        routeString.append("(~Switch in Sadat~ to Helwan Direction)");
+                    }
+                    direction = "Helwan";
+                } else if (stations[i + 1].equals("Nasser")) {
+                    if (!direction.equals("New El-Marg")){
+                        routeString.append("(~Switch in Sadat~ to New El-Marg Direction)");
+                    }
+                    direction = "New El-Marg";
+                }
+            }
+            // Check if the station is a switch station (Attaba) and change the direction
+            else if (stations[i].equals("Attaba")) {
+                if (stations[i + 1].equals("Al-Shohadaa")) {
+                    if (!direction.equals("Shubra El-Kheima")){
+                        routeString.append("(~Switch in Attaba~ to Shubra El-Kheima Direction)");
+                    }
+                    direction = "Shubra El-Kheima";
+                } else if (stations[i + 1].equals("Mohamed Naguib")) {
+                    if (!direction.equals("El-Mounib")){
+                        routeString.append("(~Switch in Attaba~ to El-Mounib Direction)");
+                    }
+                    direction = "El-Mounib";
+                } else if (stations[i + 1].equals("Bab El Shaaria")) {
+                    if (!direction.equals("Adly Mansour")){
+                        routeString.append("(~Switch in Attaba~ to Adly Mansour Direction)");
+                    }
+                    direction = "Adly Mansour";
+                } else if (stations[i + 1].equals("Nasser")) {
+                    if (!direction.equals("Rod al-Farag Axis")){
+                        routeString.append("(~Switch in Attaba~ to Rod al-Farag Axis Direction)");
+                    }
+                    direction = "Rod al-Farag Axis";
+                }
+            }
+            // Check if the station is a switch station (Nasser) and change the direction
+            else if (stations[i].equals("Nasser")) {
+                if (stations[i + 1].equals("Maspero")) {
+                    if (!direction.equals("Rod al-Farag Axis")){
+                        routeString.append("(~Switch in Nasser~ to Rod al-Farag Axis Direction)");
+                    }
+                    direction = "Rod al-Farag Axis";
+                } else if (stations[i + 1].equals("Attaba")) {
+                    if (!direction.equals("Adly Mansour")){
+                        routeString.append("(~Switch in Nasser~ to Adly Mansour Direction)");
+                    }
+                    direction = "Adly Mansour";
+                } else if (stations[i + 1].equals("Sadat")) {
+                    if (!direction.equals("Helwan")){
+                        routeString.append("(~Switch in Nasser~ to Helwan Direction)");
+                    }
+                    direction = "Helwan";
+                } else if (stations[i + 1].equals("Orabi")) {
+                    if (!direction.equals("New El-Marg")){
+                        routeString.append("(~Switch in Nasser~ to New El-Marg Direction)");
+                    }
+                    direction = "New El-Marg";
+                }
+            }
+            if (i + 1 < stations.length)
+                routeString.append(" -> ");
         }
-
         return routeString;
     }
-    private static final Map<String, Map<String, String>> SWITCH_STATIONS = Map.of(
-            "Al-Shohadaa", Map.of(
-                    "Ghamra", "New El-Marg",
-                    "Massara", "Shubra El-Kheima",
-                    "Attaba", "El-Mounib",
-                    "Orabi", "Helwan"
-            ),
-            "Sadat", Map.of(
-                    "Opera", "El-Mounib",
-                    "Mohamed Naguib", "Shubra El-Kheima",
-                    "Saad Zaghloul", "Helwan",
-                    "Nasser", "New El-Marg"
-            ),
-            "Attaba", Map.of(
-                    "Al-Shohadaa", "Shubra El-Kheima",
-                    "Mohamed Naguib", "El-Mounib",
-                    "Bab El Shaaria", "Adly Mansour",
-                    "Nasser", "Rod al-Farag Axis"
-            ),
-            "Nasser", Map.of(
-                    "Maspero", "Rod al-Farag Axis",
-                    "Attaba", "Adly Mansour",
-                    "Sadat", "Helwan",
-                    "Orabi", "New El-Marg"
-            )
-    );
 
-    private String updateDirection(String currentStation, String nextStation, String currentDirection) {
-        Map<String, String> stationDirections = SWITCH_STATIONS.get(currentStation);
-        if (stationDirections != null) {
-            String newDirection = stationDirections.get(nextStation);
-            if (newDirection != null && !newDirection.equals(currentDirection)) {
-                routeString.append("(Switch to ").append(newDirection).append(" Direction)");
-                return newDirection;
-            }
-        }
-        return currentDirection;
-    }
-
+//    @SuppressLint("DefaultLocale")
     private String getTime(int numberOfStations) {
         int expectedTime = numberOfStations * 2;
         int hours = expectedTime / 60;
@@ -398,4 +544,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Sha
         StartStation = "";
         EndStation = "";
     }
+    
+
+
 }
